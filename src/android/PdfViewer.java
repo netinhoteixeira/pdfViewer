@@ -11,6 +11,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import org.apache.cordova.file.FileHelper;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class PdfViewer extends CordovaPlugin {
 
@@ -34,7 +39,52 @@ public class PdfViewer extends CordovaPlugin {
             @Override
             public void run() {
 
-                File file = new File(fileName);
+                File file = new File(cordova.getActivity().getExternalFilesDir(null), fileName);
+
+                if (!file.exists()) {
+
+                    InputStream in = null;
+                    OutputStream out = null;
+
+                    try {
+                        in = FileHelper.getInputStreamFromUriString("file:///android_asset/www/" + fileName, cordova);
+                        String filePath = file.getAbsolutePath();
+                        filePath = filePath.substring(0, filePath.lastIndexOf("/") + 1);
+                        File dbPathFile = new File(filePath);
+                        if (!dbPathFile.exists()) {
+                            dbPathFile.mkdirs();
+                        }
+
+                        File newFile = new File(filePath + fileName);
+                        out = new FileOutputStream(newFile);
+
+                        byte[] buf = new byte[1024];
+                        int len;
+                        while ((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+
+                        Log.v("info", "Copied file content to: " + newFile.getAbsolutePath());
+                    } catch (IOException e) {
+                        Log.v("openPDF", "No file found, Error=" + e.getMessage());
+                    } finally {
+                        if (in != null) {
+                            try {
+                                in.close();
+                            } catch (IOException ignored) {
+                            }
+                        }
+
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException ignored) {
+                            }
+                        }
+                    }
+
+                    file.getParentFile().mkdirs();
+                }
 
                 if (file.exists()) {
 
