@@ -95,7 +95,7 @@ public class PdfViewer extends CordovaPlugin {
                         intent.setDataAndType(Uri.fromFile(file), "application/pdf");
                         cordova.getActivity().startActivity(intent);
                     } catch (android.content.ActivityNotFoundException e) {
-                        Log.e(TAG, "PdfViewer: Error loding url " + fileName + ":" + e.toString());
+                        Log.e(TAG, "PdfViewer: Error loading url " + fileName + ":" + e.toString());
                     }
 
                 } else {
