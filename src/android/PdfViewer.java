@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
-import org.apache.cordova.file.FileHelper;
+import de.cyberkatze.phonegap.plugin.FileHelper;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
